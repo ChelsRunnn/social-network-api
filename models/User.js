@@ -18,7 +18,7 @@ const userSchema = new Schema(
             match: true
         },
         thoughts: [thoughtSchema],
-        friends: [friendSchema]
+        // friends: [userSchema] + validate not self
     },
     {
         // what is this doing again?
