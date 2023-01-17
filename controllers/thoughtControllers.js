@@ -64,8 +64,29 @@ module.exports = {
     },
     // create Reaction
     createReaction(req, res) {
-        Reaction.create(req.body)
-          .then((reaction) => res.json(reaction))
+        Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $addToSet: { reactions: { reactionBody: req.body } } },
+            { runValidators: true, new: true }
+        )
+          .then((thought) => 
+           !thought
+           ? res.status(404).json({ message: "No reaction with that id!"})
+           : res.json(thought))
           .catch((err) => res.status(500).json(err));
       },
+        // delete friend
+    deleteReaction(req, res){
+        Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $pull: { reactions: { reactionId: req.params.reactionId } } },
+            { new: true }
+        )
+        .then((thought) =>
+          !thought
+            ? res.status(404).json({ message: 'No reaction found with that ID!'})
+            : res.json({ message: 'Reaction successfully removed!' })
+        )
+        .catch((err) => res.status(500).json(err));
+    }
 }

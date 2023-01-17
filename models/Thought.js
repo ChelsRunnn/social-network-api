@@ -1,4 +1,6 @@
 const { Schema, model, Types } = require('mongoose');
+var moment = require('moment');
+ // require moment().format(); 
 
 // reactionSchema defines the reaction sub-document 
 const reactionSchema = new Schema(
@@ -20,6 +22,7 @@ const reactionSchema = new Schema(
         createdAt: {
             type: Date,
             default: Date.now,
+            get: createdAtFormat => moment(createdAtFormat).format('h:mm a, MMM Do YY')
             // to format date
             // get: createdAt...
         },
@@ -42,7 +45,8 @@ const thoughtSchema = new Schema(
         },
         createdAt: {
             type: Date,
-            default: Date.now
+            default: Date.now,
+            get: createdAtFormat => moment(createdAtFormat).format('h:mm a, MMM Do YY')
         },
         username: {
             // type: Schema.Types.ObjectId, 

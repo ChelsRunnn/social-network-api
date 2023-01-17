@@ -1,4 +1,4 @@
-const { ObjectId } = require('mongoose').Types;
+// const { ObjectId } = require('mongoose').Types;
 const { User } = require('../models');
 
 // .aggregate() needed?
@@ -36,7 +36,7 @@ module.exports = {
         )
         .then((user) => 
          !user
-          ? res.status(404).json({ message: 'No user with that id!' })
+          ? res.status(404).json({ message: 'No user with that ID!' })
           : res.json(user)
         )
         .catch((err) => res.status(500).json(err));
@@ -47,8 +47,9 @@ module.exports = {
         { _id: req.params.userId }
       )
       .then((user) =>
-       !usdr
-        ? res.status(404).json({ message: 'No user with that id!'})
+       !user
+        ? res.status(404).json({ message: 'No user with that ID!'})
+        // deletes user successfully but not associated thoughts
         : Thought.deleteMany({ _id: { $in: user.thoughts } })
         )
       .then(() => res.json({ message: 'User and thoughts successfully deleted!' }))
@@ -64,9 +65,11 @@ module.exports = {
         .then((user) => 
          !user
            ? res.status(404).json({ message: 'No friend found with that ID' } )
-           : res.json(user, { message: 'Friend successfully added!' })
+           : res.json({ message: 'Friend successfully added!' })
            )
-        .catch((err) => res.status(500).json(err));
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json(err)});
     },
     // delete friend
     deleteFriend(req, res){
@@ -78,7 +81,7 @@ module.exports = {
         .then((user) =>
           !user
             ? res.status(404).json({ message: 'No friend found with that ID!'})
-            : res.json(user, { message: 'Friend successfully removed!' })
+            : res.json({ message: 'Friend successfully removed!' })
         )
     }
 }
