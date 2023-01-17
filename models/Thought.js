@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, Types } = require('mongoose');
 
 // reactionSchema defines the reaction sub-document 
 const reactionSchema = new Schema(
@@ -20,8 +20,16 @@ const reactionSchema = new Schema(
         createdAt: {
             type: Date,
             default: Date.now,
-            // getter method to format timestamp
-        }
+            // to format date
+            // get: createdAt...
+        },
+    },
+    {
+        toJSON: {
+            virtuals: true, 
+            getters: true,
+        },
+        id: false,
     });
 // new instance of mongoose schema to define Thought document
 const thoughtSchema = new Schema(
@@ -29,6 +37,7 @@ const thoughtSchema = new Schema(
         thoughtText: {
             type: String,
             required: true,
+            minLength: 1,
             maxLength: 280
         },
         createdAt: {
@@ -36,9 +45,8 @@ const thoughtSchema = new Schema(
             default: Date.now
         },
         username: {
-            type: Schema.Types.username,
-            // default: () => new Types.ObjectId(), 
-            // ? ((something like this needed?))
+            type: Schema.Types.ObjectId, 
+            ref: 'User', 
             required: true
         },
         reactions: [reactionSchema]
@@ -46,11 +54,12 @@ const thoughtSchema = new Schema(
     {
         toJSON: {
             virtuals: true,
+            getters: true,
         },
         id: false,
     }
 );
-// virtual property reactionCount gets the number of reactions on each thought
+// virtual property reactionCount gets the total number of reactions on each thought
 thoughtSchema.virtual('reactionCount').get(function () {
     return this.reactions.length
 });
@@ -60,7 +69,7 @@ const reactionData = [
     { reactionBody: 'Killing it!' },
     { reactionBody: 'Actually crying, this is TOO funny!!' },
     { reactionBody: 'Dang, you wildin!' },  ];
-// initialize the Though model
+// create the Though model using thoughtSchema
 const Thought = model('Thought', thoughtSchema);
 
 module.exports = Thought;
