@@ -50,9 +50,10 @@ module.exports = {
        !user
         ? res.status(404).json({ message: 'No user with that ID!'})
         // deletes user successfully but not associated thoughts
-        : Thought.deleteMany({ _id: { $in: user.thoughts } })
+        // : Thought.deleteMany({ _id: { $in: user.thoughts } })
+        : res.json({ message: 'User and thoughts successfully deleted!' })
         )
-      .then(() => res.json({ message: 'User and thoughts successfully deleted!' }))
+    //   .then(() => res.json({ message: 'User and thoughts successfully deleted!' }))
       .catch((err) => res.status(500).json(err));
     },
     // add friend
